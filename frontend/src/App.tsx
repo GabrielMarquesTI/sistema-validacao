@@ -1,30 +1,34 @@
-import { useEffect, useState } from "react";
-import { getBrands, type Brand } from "./services/brandService";
+import { useState } from "react";
+import { BrandSelect } from "./components/forms/BrandSelect";
+import { ModelSelect } from "./components/forms/ModelSelect";
 
 function App() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-
-  useEffect(() => {
-    getBrands()
-      .then((data) => {
-        console.log("Brands recebidas:", data); 
-        setBrands(data);
-      })
-      .catch((error) => {
-        console.error("Erro ao buscar marcas:", error);
-      });
-  }, []);
+  const [brandId, setBrandId] = useState<number>();
+  const [modelId, setModelId] = useState<number>();
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <h1>Sistema de Validação</h1>
 
-      <h2>Marcas</h2>
-      <ul>
-        {brands.map((brand) => (
-          <li key={brand.id}>{brand.name}</li>
-        ))}
-      </ul>
+      <BrandSelect
+        value={brandId}
+        onChange={(id) => {
+          setBrandId(id);
+          setModelId(undefined); // limpa modelo ao trocar marca
+        }}
+      />
+
+      <ModelSelect
+        brandId={brandId}
+        value={modelId}
+        onChange={(id) => setModelId(id)}
+      />
+
+      {modelId && (
+        <p>
+          Marca: {brandId} | Modelo: {modelId}
+        </p>
+      )}
     </div>
   );
 }
